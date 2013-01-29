@@ -1,0 +1,17 @@
+[Desktop Entry]
+Name=Nepomuk tags
+Comment=Resources by tags
+Type=Service
+Icon=nepomuk
+ServiceTypes=Plasma/DataEngine
+X-Plasma-API=python
+X-Plasma-MainScript=code/main.py
+X-KDE-PluginInfo-Author=Benedikt Becker
+X-KDE-PluginInfo-Email=zol@benozol.de
+X-KDE-PluginInfo-Name=nepomuk-tags-engine
+X-KDE-PluginInfo-Version=0.1
+X-KDE-PluginInfo-Website=http://plasma.kde.org/
+X-KDE-PluginInfo-Category=Utilities
+X-KDE-PluginInfo-Depends=
+X-KDE-PluginInfo-License=LGPL
+X-KDE-PluginInfo-EnabledByDefault=true
