@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+  <class>nepomukTagged</class>
+  <widget class="QWidget" name="nepomukTagged">
+    <widget class="QLineEdit" name="kcfg_tag">
+      <property name="tag">
+        <string>Tag</string>
+      </property>
+      <property name="placeholderText">
+        <string>A nepomuk tag</string>
+      </property>
+      <property name="toolTip">
+        <string>A nepomuk tag</string>
+      </property>
+    </widget>
+  </widget>
+</ui>

@@ -2,7 +2,7 @@
 <!DOCTYPE kcfg SYSTEM
     "http://www.kde.org/standards/kcfg/1.0/kcfg.xsd">
 <kcfg>
-  <group name="drop">
+  <group name="remove">
     <entry name="ressource" type="String">
       <label>Remove a tag from a resource.</label>
     </entry>

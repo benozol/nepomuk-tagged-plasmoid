@@ -8,9 +8,10 @@ PlasmaComponents.ListItem {
     id: root
     enabled: true
     signal update
+    property string dataEngine
     PlasmaCore.DataSource {
         id: dataSource
-        dataEngine: "nepomuk-tags"
+        dataEngine: root.dataEngine
     }
     MouseArea {
         id: mouseArea
@@ -24,7 +25,7 @@ PlasmaComponents.ListItem {
         mainText: "Resource data"
         function formatted() {
             function aux(attribute, value) {
-                return ((value !== undefined) && (attribute+": <i>"+value+"</i><br/>")) || ""
+                return ((value !== undefined) && ("<font color='#999'>"+attribute+":</font> <i>"+value+"</i><br/>")) || ""
             }
             var res =
               aux('description', description) +
@@ -109,13 +110,14 @@ PlasmaComponents.ListItem {
                             width: root.width
                         }
                     ]
-                    function finishedDropTag() {
-                        console.log('finishedDropTag');
+                    function finishedDropTag(job) {
+                        console.log('finishedDropTag', job);
                         root.update();
                     }
                     onAccepted: {
+                        console.log('dropping tag ', tagName, ' from ', uri);
                         var service = dataSource.serviceForSource(tagName);
-                        var configGroup = service.operationDescription('drop');
+                        var configGroup = service.operationDescription('remove');
                         configGroup.ressource = uri.toString();
                         var dropJob = service.startOperationCall(configGroup);
                         dropJob.finished.connect(finishedDropTag);
@@ -141,15 +143,6 @@ PlasmaComponents.ListItem {
                     ]
                 }
             }
-            // QtExtraComponents.QIconItem {
-            //     icon: "view-pim-notes"
-            //     width: column.h / 2
-            //     height: column.h / 2
-            //     MouseArea {
-            //         anchors.fill: parent
-            //         onDoubleClicked: console.log('comment')
-            //     }
-            // }
         }
     }
 }

@@ -57,13 +57,15 @@ class NepomukTagDataEngine(DataEngine):
         return self.updateSourceEvent(name)
 
     def updateSourceEvent(self, label):
+        if not label in self.sources():
+            return False
         self.removeAllData(label)
         for resource in Nepomuk.Tag(label).tagOf():
             data = {
                 u'uri': resource.uri(),
                 u'label': resource.label(),
                 u'genericIcon': resource.genericIcon(),
-                u'type': resource.type(),
+                u'type': QUrl(resource.type()).fragment(),
             }
             nepomukResource = Nepomuk.Resource.fromResourceUri(KUrl(resource.uri()))
             if nepomukResource.hasProperty(Soprano.Vocabulary.NAO.description()):
@@ -89,10 +91,10 @@ class DropTagService(Plasma.Service):
     def __init__(self, parent, tagName):
         Plasma.Service.__init__(self, parent)
         self.tagName = tagName
-        self.setName("droptag")
+        self.setName("nepomuk_tagged_service")
 
     def createJob(self, operation, parameters):
-        if (operation == "drop"):
+        if (operation == "remove"):
             return DropTagJob(self, parameters)
         return None
 
@@ -102,14 +104,19 @@ class DropTagJob(Plasma.ServiceJob):
     def __init__(self, service, parameters):
         self.tagName = service.tagName
         ressourceUrl = parameters[QString(u'ressource')].toString()
-        Plasma.ServiceJob.__init__(self, ressourceUrl, "drop", parameters, service)
+        Plasma.ServiceJob.__init__(self, ressourceUrl, "remove", parameters, service)
 
     def start(self):
+        print "DropTagJob.start", self.destination(), self.tagName
         resource = Nepomuk.Resource.fromResourceUri(KUrl(self.destination()))
         tags = resource.tags()
-        tags.remove(Nepomuk.Tag(self.tagName))
-        resource.setTags(tags)
-        self.setResult(True)
+        tag = Nepomuk.Tag(self.tagName)
+        if tag in tags:
+            tags.remove(tag)
+            resource.setTags(tags)
+            self.setResult(True)
+        else:
+            self.setResult(False)
 
 
 def CreateDataEngine(parent):
