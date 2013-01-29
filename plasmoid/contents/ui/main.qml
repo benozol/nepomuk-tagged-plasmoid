@@ -89,11 +89,11 @@ Item {
     Rectangle {
         id: scrollbar
         anchors.right: listView.right
-        y: heading.height + listView.visibleArea.yPosition * listView.height
+        y: heading.height + Math.max(0, listView.visibleArea.yPosition * listView.height)
         width: 3
-        height: listView.visibleArea.heightRatio * listView.height
+        height: listView.visibleArea.heightRatio * listView.height + Math.min(0, listView.visibleArea.yPosition * listView.height)
         color: "#ccc"
         radius: 1
-        clip: true
     }
+    clip: true
 }
