@@ -11,12 +11,9 @@ Item {
         plasmoid.setAction("reload", "Reload tagged resources", "appointment-recurring");
         plasmoid.aspectRatioMode = 0;
 	plasmoid.addEventListener('ConfigChanged', configChanged);
-        console.log("SOURCES", plasmoid, root, importantStuffSource.sources);
-        //plasmoid.busy = true;
     }
     function configChanged() {
         var tagName = plasmoid.readConfig("tag", "todo");
-        console.log('onConfigChanged', tagName);
         importantStuffSource.disconnectSource(root.tagName);
         plasmoid.writeConfig("tag", tagName);
         root.tagName = tagName
@@ -25,14 +22,12 @@ Item {
         plasmoid.busy = true;
     }
     function action_reload () {
-        console.log('reload');
         importantStuffSource.update();
     }
     PlasmaCore.DataSource {
         id: importantStuffSource
         dataEngine: root.dataEngine
         onNewData: {
-            console.log("onNewData", root.tagName);
             interval = 0;
             plasmoid.busy = false;
             importantStuffModel.clear();
@@ -77,17 +72,23 @@ Item {
             top: heading.bottom
             bottom: root.bottom
         }
+        highlightFollowsCurrentItem: true
         width: parent.width
-        contentWidth: root.width - 7
+        contentWidth: root.width - (listView.contentHeight > listView.height ? 7 : 0)
+        Behavior on contentWidth {
+            NumberAnimation {}
+        }
         model: importantStuffModel
         delegate: ImportantStuffItem {
             Component.onCompleted: update.connect(importantStuffSource.update)
             dataEngine: root.dataEngine
+            plasmoidRoot: root
         }
         clip: true
     }
     Rectangle {
         id: scrollbar
+        visible: listView.contentHeight > listView.height 
         anchors.right: listView.right
         y: heading.height + Math.max(0, listView.visibleArea.yPosition * listView.height)
         width: 3

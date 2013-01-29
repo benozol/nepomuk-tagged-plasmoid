@@ -9,6 +9,7 @@ PlasmaComponents.ListItem {
     enabled: true
     signal update
     property string dataEngine
+    property Item plasmoidRoot
     PlasmaCore.DataSource {
         id: dataSource
         dataEngine: root.dataEngine
@@ -77,7 +78,7 @@ PlasmaComponents.ListItem {
             QtExtraComponents.QIconItem {
                 id: rejectIcon
                 icon: "task-reject"
-                opacity: 0.2
+                opacity: 0.4 // rejectMouseArea.containsMouse ? 1.0 : 0.2
                 anchors.centerIn: parent
                 width: row.size / 2
                 height: row.size / 2
@@ -86,22 +87,24 @@ PlasmaComponents.ListItem {
                     anchors.fill: parent
                     hoverEnabled: true
                     onClicked: {
-                        //removeTagDialog.popupPosition(root);
                         removeTagDialog.open();
                     }
+                    // onPositionChanged: {
+                    //     console.log('onPositionChanged');
+                    // }
                 }
-                states: State {
-                    name: "hover"
-                    when: rejectMouseArea.containsMouse
-                    PropertyChanges {
-                        target: rejectIcon
-                        opacity: 1.0
-                    }
-                }
-                transitions: Transition {
-                    from: ""; to: "hover"; reversible: true
-                    NumberAnimation { properties: "opacity"; duration: 200; easing.type: Easing.InOutQuad }
-                }
+                // states: State {
+                //     name: "hover"
+                //     when: rejectMouseArea.containsMouse
+                //     PropertyChanges {
+                //         target: rejectIcon
+                //         opacity: 1.0
+                //     }
+                // }
+                // transitions: Transition {
+                //     from: ""; to: "hover"; reversible: true
+                //     NumberAnimation { properties: "opacity"; duration: 200; easing.type: Easing.InOutQuad }
+                // }
                 PlasmaComponents.Dialog {
                     id: removeTagDialog
                     content: [
@@ -110,6 +113,7 @@ PlasmaComponents.ListItem {
                             width: root.width
                         }
                     ]
+                    onOpen: dialog.popupPosition(plasmoidRoot.root, Qt.AlignCenter)
                     function finishedDropTag(job) {
                         console.log('finishedDropTag', job);
                         root.update();
